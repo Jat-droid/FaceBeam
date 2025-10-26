@@ -1,0 +1,21 @@
+# Virtual Environment Folder
+venv/
+
+# Database Files
+*.db
+*.db-journal*
+
+# CSV Reports
+*.csv
+
+# Python Cache Files
+__pycache__/
+*.pyc
+
+# IDE/Editor Specific Files (Optional but good practice)
+.vscode/
+.idea/
+
+# Operating System Files (Optional)
+.DS_Store
+Thumbs.db
