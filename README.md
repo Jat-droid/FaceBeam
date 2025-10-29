@@ -1,5 +1,5 @@
-# Heading 1
-✨ FaceBeam: AI-Powered Automated Attendance System
+
+# ✨ FaceBeam: AI-Powered Automated Attendance System
 
 FaceBeam is an intelligent system designed to automate student attendance using real-time facial recognition, synchronized with the official class timetable. It aims to replace inefficient manual attendance methods with a faster, more accurate, and secure solution.
 ## Screenshots
@@ -13,41 +13,40 @@ FaceBeam is an intelligent system designed to automate student attendance using 
 *Shows student details, attendance percentage, and status checker.*
 
 **Admin Dashboard:**
-![Admin dashboard showing live class and absentees](images/live_dashboard.png) 
+![Admin dashboard showing live class and absentees](images/Live_Dashboard.png) 
 *Displays live class information and current absentees.*
 
 
-# Heading 2
-Problem Solved
+
+# Problem Solved
 
 Traditional attendance methods suffer from:
 
-- Item 1 
+- 
 Time Consumption: Manual roll calls waste valuable lecture time.
-- Item 2
+- 
 Inaccuracy: Human errors in marking and data entry.
--Item 3
-Proxy Attendance: Students marking attendance for absent friends.
-- Item 4
+
+- Proxy Attendance: Students marking attendance for absent friends.
+- 
 Lack of Analysis: Difficulty in tracking attendance patterns.
 
 FaceBeam addresses these issues by leveraging AI for automated and reliable attendance logging.
-# Heading 2
-Features
-# Heading 3
-Real-time Facial Recognition: Detects and identifies multiple students simultaneously using a webcam.
-# Heading 3
-Automated Attendance Logging: Records attendance directly into an SQLite database.
-# Heading 3
-Timetable Synchronization: Ensures attendance is marked only during scheduled class times and linked to the correct subject.
-# Heading 3
-Student Dashboard: A web interface to view individual student details (photo, admission info) and check their attendance status (Present/Absent) for specific subjects and dates.
-# Heading 3
-Attendance Analytics: Calculates and displays overall attendance percentage for each student.
-# Heading 3
-Admin Dashboard: A live view showing the current class in session and a list of students absent from that class.
-# Heading 2
-Technology Stack
+# Features
+
+# Real-time Facial Recognition: Detects and identifies multiple students simultaneously using a webcam.
+
+# Automated Attendance Logging: Records attendance directly into an SQLite database.
+
+# Timetable Synchronization: Ensures attendance is marked only during scheduled class times and linked to the correct subject.
+
+# Student Dashboard: A web interface to view individual student details (photo, admission info) and check their attendance status (Present/Absent) for specific subjects and dates.
+
+# Attendance Analytics: Calculates and displays overall attendance percentage for each student.
+
+# Admin Dashboard: A live view showing the current class in session and a list of students absent from that class.
+
+# Technology Stack
 
 Backend: Python 3.11, Flask
 
@@ -60,8 +59,8 @@ Frontend: HTML, CSS, Bootstrap 5, JavaScript
 Charting: Chart.js (for student dashboard chart, if implemented)
 
 Development Tools: VS Code, Git, GitHub
-# Heading 2
-Setup and Installation
+
+# Setup and Installation
 
 Follow these steps to set up the project locally:
 
