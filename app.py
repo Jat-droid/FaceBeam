@@ -151,6 +151,56 @@ def add_student():
 
     return redirect(url_for('student_dashboard', student_name=name))
 
+
+@app.route('/delete_student/<student_name>', methods=['POST'])
+def delete_student(student_name):
+    conn = None # Initialize conn to None
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        conn.row_factory = sqlite3.Row # Use row factory for easier access
+        cursor = conn.cursor()
+
+        # 1. Find the student in the database first
+        cursor.execute("SELECT id, image_path FROM students WHERE name = ?", (student_name,))
+        student_data = cursor.fetchone()
+
+        if not student_data:
+            print(f"Student '{student_name}' not found in database.")
+            return jsonify({'success': False, 'message': f'Student {student_name} not found.'}), 404
+
+        student_db_id = student_data['id']
+        image_filename = student_data['image_path']
+
+        # 2. Delete the student's image file using the path from the database
+        filepath = os.path.join(KNOWN_FACES_DIR, image_filename)
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            print(f"Deleted image file: {filepath}")
+        else:
+            print(f"Warning: Image file not found at {filepath} (might have been deleted previously).")
+
+        # 3. Delete records from the database using the student's ID
+        # Delete from attendance table first due to potential foreign key links
+        cursor.execute("DELETE FROM attendance WHERE student_db_id = ? OR name = ?", (student_db_id, student_name)) # Added name fallback just in case
+        # Delete from students table
+        cursor.execute("DELETE FROM students WHERE id = ?", (student_db_id,))
+        
+        conn.commit()
+        print(f"Successfully deleted records for student: {student_name} (ID: {student_db_id})")
+
+        conn.close()
+        conn = None # Reset conn after closing
+
+        return jsonify({'success': True, 'message': f'Student {student_name} deleted successfully.'})
+
+    except Exception as e:
+        print(f"Error deleting student '{student_name}': {e}") # Log the specific error
+        # Ensure connection is closed on error
+        if conn:
+            conn.close()
+        return jsonify({'success': False, 'message': f'An error occurred while deleting {student_name}. Check server logs.'}), 500
+
+
 # --- Admin Dashboard Routes ---
 @app.route('/admin')
 def admin_dashboard():
