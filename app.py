@@ -77,7 +77,7 @@ def student_dashboard(student_name):
             }
         
         # CALCULATE OVERALL ATTENDANCE PERCENTAGE
-        # This is a simplified calculation and can be improved
+        
         cursor.execute("SELECT COUNT(DISTINCT date(timestamp)) FROM attendance")
         total_days_with_records = cursor.fetchone()[0] or 1
         

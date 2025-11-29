@@ -34,17 +34,23 @@ Lack of Analysis: Difficulty in tracking attendance patterns.
 FaceBeam addresses these issues by leveraging AI for automated and reliable attendance logging.
 # Features
 
-# Real-time Facial Recognition: Detects and identifies multiple students simultaneously using a webcam.
+# Real-time Facial Recognition: 
+Detects and identifies multiple students simultaneously using a webcam.
 
-# Automated Attendance Logging: Records attendance directly into an SQLite database.
+# Automated Attendance Logging: 
+Records attendance directly into an SQLite database.
 
-# Timetable Synchronization: Ensures attendance is marked only during scheduled class times and linked to the correct subject.
+# Timetable Synchronization: 
+Ensures attendance is marked only during scheduled class times and linked to the correct subject.
 
-# Student Dashboard: A web interface to view individual student details (photo, admission info) and check their attendance status (Present/Absent) for specific subjects and dates.
+# Student Dashboard: 
+A web interface to view individual student details (photo, admission info) and check their attendance status (Present/Absent) for specific subjects and dates.
 
-# Attendance Analytics: Calculates and displays overall attendance percentage for each student.
+# Attendance Analytics: 
+Calculates and displays overall attendance percentage for each student.
 
-# Admin Dashboard: A live view showing the current class in session and a list of students absent from that class.
+# Admin Dashboard:
+ A live view showing the current class in session and a list of students absent from that class.
 
 # Technology Stack
 
@@ -77,12 +83,12 @@ python -m venv venv
 # On Windows (cmd/powershell):
 .\venv\Scripts\activate
 # On Windows (Git Bash):
-# source venv/Scripts/activate
+ source venv/Scripts/activate
 # On macOS/Linux:
-# source venv/bin/activate
+ source venv/bin/activate
 
 
-Install dependencies:
+# Install dependencies:
 
 Crucial: Make sure you have CMake and C++ build tools installed first (see project setup discussions).
 
