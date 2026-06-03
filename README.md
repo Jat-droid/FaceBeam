@@ -1,12 +1,15 @@
+# ✨ FaceBeam: Edge-to-Cloud AI Automated Attendance System
 
-# ✨ FaceBeam: AI-Powered Automated Attendance System
+**Live Cloud Dashboard:** [https://jat.pythonanywhere.com](https://jat.pythonanywhere.com)  
+**GitHub Repository:** [https://github.com/Jat-droid/FaceBeam](https://github.com/Jat-droid/FaceBeam)
 
-FaceBeam is an intelligent system designed to automate student attendance using real-time facial recognition, synchronized with the official class timetable. It aims to replace inefficient manual attendance methods with a faster, more accurate, and secure solution.
-## Screenshots
+FaceBeam is a custom-built, hardware-to-cloud AI pipeline designed to automate student attendance using real-time facial recognition. It utilizes a local edge device (laptop webcam) to process facial recognition locally, and upon recognizing a registered student, it fires a secure JSON payload across the internet to a live Flask cloud server.
+
+## 📸 Screenshots
 
 **Homepage (Student Selection):**
 ![Homepage showing student selection dropdown](images/Main.png) 
-*A portal to select a student.*
+*A portal to select a student or register a new one.*
 
 **Student Dashboard:**
 ![Student dashboard showing details and attendance check](images/Student_Dashboard.png) 
@@ -16,130 +19,96 @@ FaceBeam is an intelligent system designed to automate student attendance using 
 ![Admin dashboard showing live class and absentees](images/Live_Dashboard.png) 
 *Displays live class information and current absentees.*
 
+---
 
-
-# Problem Solved
-
+## 🎯 Problem Solved
 Traditional attendance methods suffer from:
+* **Time Consumption:** Manual roll calls waste valuable lecture time.
+* **Inaccuracy:** Human errors in marking and data entry.
+* **Proxy Attendance:** Students marking attendance for absent friends.
+* **Lack of Analysis:** Difficulty in tracking attendance patterns.
 
-- 
-Time Consumption: Manual roll calls waste valuable lecture time.
-- 
-Inaccuracy: Human errors in marking and data entry.
+FaceBeam addresses these issues by leveraging edge-computing AI for automated, foolproof, and reliable attendance logging.
 
-- Proxy Attendance: Students marking attendance for absent friends.
-- 
-Lack of Analysis: Difficulty in tracking attendance patterns.
+---
 
-FaceBeam addresses these issues by leveraging AI for automated and reliable attendance logging.
-# Features
+## 🚀 Key Features
+* **Edge-to-Cloud Architecture:** Heavy AI processing is done locally, keeping server costs near zero, while data is synced globally via a custom REST API.
+* **Real-time Facial Recognition:** Detects and identifies multiple students simultaneously using a webcam and deep learning models.
+* **Live Web Dashboard:** A live Flask view showing the current class in session, absentees, and individual student metrics.
+* **Timetable Synchronization:** Ensures attendance is marked *only* during scheduled class times and linked to the correct subject to prevent false positives.
+* **Web Registration Portal:** New students can register their details and capture their baseline face data directly through the web UI.
 
-# Real-time Facial Recognition: 
-Detects and identifies multiple students simultaneously using a webcam.
+---
 
-# Automated Attendance Logging: 
-Records attendance directly into an SQLite database.
+## 🛠️ Technology Stack
 
-# Timetable Synchronization: 
-Ensures attendance is marked only during scheduled class times and linked to the correct subject.
+**Edge Device (Local AI Processing):**
+* Python 3.10+
+* `face_recognition` & `dlib` (Deep Learning models)
+* OpenCV (`opencv-python`)
+* `requests` (API communication)
 
-# Student Dashboard: 
-A web interface to view individual student details (photo, admission info) and check their attendance status (Present/Absent) for specific subjects and dates.
+**Cloud Server (Web & Database):**
+* PythonAnywhere (uWSGI)
+* Flask
+* SQLite3
+* HTML5, CSS3, Bootstrap 5, JavaScript
 
-# Attendance Analytics: 
-Calculates and displays overall attendance percentage for each student.
+---
 
-# Admin Dashboard:
- A live view showing the current class in session and a list of students absent from that class.
+## ⚙️ Setup and Installation
 
-# Technology Stack
-
-Backend: Python 3.11, Flask
-
-AI/Computer Vision: face_recognition library, OpenCV (opencv-python)
-
-Database: SQLite 3
-
-Frontend: HTML, CSS, Bootstrap 5, JavaScript
-
-Charting: Chart.js (for student dashboard chart, if implemented)
-
-Development Tools: VS Code, Git, GitHub
-
-# Setup and Installation
-
-Follow these steps to set up the project locally:
-
-Clone the repository:
-
+### 1. Local Edge Device Setup
+Clone the repository to the machine that will act as the camera/edge device:
+```bash
 git clone [https://github.com/Jat-droid/FaceBeam.git](https://github.com/Jat-droid/FaceBeam.git)
 cd FaceBeam
-
-
 Create and activate a virtual environment:
 
-# Ensure you have Python 3.11 installed
+Bash
 python -m venv venv
-# On Windows (cmd/powershell):
+# On Windows:
 .\venv\Scripts\activate
-# On Windows (Git Bash):
- source venv/Scripts/activate
 # On macOS/Linux:
- source venv/bin/activate
+source venv/bin/activate
+Install required dependencies (includes specific versions to ensure face_recognition compatibility):
 
+Bash
+pip install -r requirements.txt
+(Note: Ensure you have CMake and C++ build tools installed on your OS prior to installing dlib/face_recognition).
 
-# Install dependencies:
+2. Cloud Server Setup (Optional for local testing)
+If running entirely locally, start the Flask server in a separate terminal:
 
-Crucial: Make sure you have CMake and C++ build tools installed first (see project setup discussions).
-
-Then, install the required Python packages:
-
-pip install Flask opencv-python face_recognition numpy Pillow chart.js # Add other libraries if used
-
-
-Prepare Known Faces:
-
-Place clear .jpg or .png images of students in the known_faces folder.
-
-Rename the image files to match the student's full name in lowercase with underscores instead of spaces (e.g., virat_sirohi.jpg).
-
-Set up the Database:
-
-Run the database population script once to create the facebeam.db file and set up the tables and timetable:
-
+Bash
+python database_setup.py
 python populate_database.py
-
-
-(Alternatively, run the database_setup.py and then manually add timetable/subject data using DB Browser for SQLite)
-
-Use DB Browser for SQLite to add/edit student admission details in the students table if needed.
-
-Usage
-
-You need to run two components simultaneously in separate terminals:
-
-Terminal 1: Start the Web Server
-
 python app.py
-
-
 Access the web interface at http://127.0.0.1:5000.
 
-Terminal 2: Start the Recognition Script
+(To deploy to PythonAnywhere, clone this repository to the cloud environment, run the database setup scripts, and configure the WSGI file to point to app.py using absolute paths).
 
+📡 Usage: Connecting Edge to Cloud
+Once your server is running (either locally or on a cloud host like PythonAnywhere), configure your edge device to point to the API.
+
+Open recognize.py.
+
+Update the CLOUD_API_URL to match your server domain:
+
+Python
+CLOUD_API_URL = "[https://yourdomain.pythonanywhere.com/api/log_attendance](https://yourdomain.pythonanywhere.com/api/log_attendance)"
+Run the recognition script:
+
+Bash
 python recognize.py
+The webcam will open, begin scanning for known faces, and automatically shoot attendance payloads to your live web dashboard based on the active timetable!
 
+🔮 Future Scope
+Implement a secure JWT/OAuth login system for the Admin Dashboard.
 
-This will open the webcam window and start logging attendance based on the schedule.
+Add a web UI configuration page to manage subjects and the timetable (replacing the manual SQLite population script).
 
-Future Scope
+Integrate email/SMS notifications for absentees.
 
-Implement a secure login system for the Admin Dashboard.
-
-Add features to manage subjects and the timetable directly via the web interface.
-
-Integrate email notifications for absentees.
-
-Enhance AI with liveness detection or engagement analysis.
-
-Deploy the application to a cloud platform for live access.
+Enhance AI with liveness detection (anti-spoofing) or engagement analysis.
