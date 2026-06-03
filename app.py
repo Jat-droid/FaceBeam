@@ -77,7 +77,6 @@ def student_dashboard(student_name):
             }
         
         # CALCULATE OVERALL ATTENDANCE PERCENTAGE
-        
         cursor.execute("SELECT COUNT(DISTINCT date(timestamp)) FROM attendance")
         total_days_with_records = cursor.fetchone()[0] or 1
         
@@ -154,10 +153,10 @@ def add_student():
 
 @app.route('/delete_student/<student_name>', methods=['POST'])
 def delete_student(student_name):
-    conn = None # Initialize conn to None
+    conn = None 
     try:
         conn = sqlite3.connect(DB_NAME)
-        conn.row_factory = sqlite3.Row # Use row factory for easier access
+        conn.row_factory = sqlite3.Row 
         cursor = conn.cursor()
 
         # 1. Find the student in the database first
@@ -180,22 +179,19 @@ def delete_student(student_name):
             print(f"Warning: Image file not found at {filepath} (might have been deleted previously).")
 
         # 3. Delete records from the database using the student's ID
-        # Delete from attendance table first due to potential foreign key links
-        cursor.execute("DELETE FROM attendance WHERE student_db_id = ? OR name = ?", (student_db_id, student_name)) # Added name fallback just in case
-        # Delete from students table
+        cursor.execute("DELETE FROM attendance WHERE student_db_id = ? OR name = ?", (student_db_id, student_name)) 
         cursor.execute("DELETE FROM students WHERE id = ?", (student_db_id,))
         
         conn.commit()
         print(f"Successfully deleted records for student: {student_name} (ID: {student_db_id})")
 
         conn.close()
-        conn = None # Reset conn after closing
+        conn = None 
 
         return jsonify({'success': True, 'message': f'Student {student_name} deleted successfully.'})
 
     except Exception as e:
-        print(f"Error deleting student '{student_name}': {e}") # Log the specific error
-        # Ensure connection is closed on error
+        print(f"Error deleting student '{student_name}': {e}") 
         if conn:
             conn.close()
         return jsonify({'success': False, 'message': f'An error occurred while deleting {student_name}. Check server logs.'}), 500
@@ -217,7 +213,7 @@ def api_live_class():
     cursor = conn.cursor()
     
     query = """
-        SELECT s.name as subject_name, t.start_time, t.end_time
+        SELECT s.name as subject_name, t.start_time, t.end_time, t.subject_id
         FROM timetable t JOIN subjects s ON t.subject_id = s.id
         WHERE t.day_of_week = ? AND t.start_time <= ? AND t.end_time >= ?
     """
@@ -261,8 +257,36 @@ def api_absentees():
     return jsonify([{'name': name} for name in absent_students])
 
 
+# --- NEW: Cloud Receiver API Endpoint ---
+@app.route('/api/log_attendance', methods=['POST'])
+def receive_attendance():
+    """Receives attendance logs from the edge device over HTTP POST requests."""
+    data = request.get_json()
+    
+    name = data.get('name')
+    timestamp = data.get('timestamp')
+    subject_id = data.get('subject_id')
+
+    if not name or not timestamp:
+        return jsonify({"error": "Missing required payload data"}), 400
+
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO attendance (name, timestamp, subject_id) VALUES (?, ?, ?)",
+            (name, timestamp, subject_id)
+        )
+        conn.commit()
+        conn.close()
+        
+        print(f"☁️ Cloud Endpoint: Received and logged attendance for {name}")
+        return jsonify({"message": "Successfully logged to backend database"}), 200
+        
+    except sqlite3.Error as e:
+        print(f"Database error at cloud receiver endpoint: {e}")
+        return jsonify({"error": "Internal database execution error"}), 500
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-

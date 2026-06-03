@@ -5,12 +5,17 @@ import numpy as np
 from PIL import Image, UnidentifiedImageError
 from datetime import datetime
 import sqlite3
+import requests # <-- NEW: Import the requests library to send data over the web
 
 DB_NAME = 'facebeam.db'
 KNOWN_FACES_DIR = "known_faces"
 
+# --- NEW: Configuration for Cloud API ---
+# Keep this pointing to localhost for now. When you deploy the web app to the cloud, 
+# you will change this to your live URL (e.g., "https://facebeam.onrender.com/api/log_attendance")
+CLOUD_API_URL = "http://127.0.0.1:5000/api/log_attendance" 
+
 def get_current_subject():
-    
     now = datetime.now()
     current_day = now.weekday()
     current_time = now.strftime('%H:%M')
@@ -71,33 +76,28 @@ while True:
 
                     if name not in logged_names_today[current_subject_id]:
                         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        
+                        # --- MODIFIED: Edge-to-Cloud API Request ---
+                        # 1. Package the data into a JSON dictionary
+                        payload = {
+                            "name": name,
+                            "timestamp": timestamp,
+                            "subject_id": current_subject_id
+                        }
+                        
+                        # 2. Send the data to the Flask server via HTTP POST
                         try:
-                            conn = sqlite3.connect(DB_NAME)
-                            cursor = conn.cursor()
+                            response = requests.post(CLOUD_API_URL, json=payload, timeout=5)
                             
-                            
-                            # 1. Find the student's primary ID from the 'students' table.
-                            cursor.execute("SELECT id FROM students WHERE name = ?", (name,))
-                            student_id_result = cursor.fetchone()
-                            
-                            if student_id_result:
-                                student_db_id = student_id_result[0]
-                                
-                                # 2. Insert the attendance record with the correct student_db_id.
-                                cursor.execute(
-                                    "INSERT INTO attendance (name, timestamp, subject_id, student_db_id) VALUES (?, ?, ?, ?)",
-                                    (name, timestamp, current_subject_id, student_db_id)
-                                )
-                                conn.commit()
-                                
+                            if response.status_code == 200:
                                 logged_names_today[current_subject_id].append(name)
-                                print(f"✅ Logged '{name}' for Subject ID {current_subject_id}")
+                                print(f"📡 Sent to Cloud API: '{name}' for Subject ID {current_subject_id}")
                             else:
-                                print(f"⚠️ Could not find student '{name}' in the students table.")
+                                print(f"⚠️ Failed to send to cloud. Server responded: {response.status_code} - {response.text}")
+                                
+                        except requests.exceptions.RequestException as e:
+                            print(f"🚨 Network Error: Could not reach the cloud server. Make sure app.py is running. {e}")
 
-                            conn.close()
-                        except sqlite3.Error as e:
-                            print(f"Database error: {e}")
 
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
         cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 255, 0), cv2.FILLED)

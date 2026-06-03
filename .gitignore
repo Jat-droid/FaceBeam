@@ -19,3 +19,6 @@ __pycache__/
 # Operating System Files (Optional)
 .DS_Store
 Thumbs.db
+# Ignore user-uploaded face images, but keep the folder structure
+known_faces/*
+!known_faces/.gitkeep
