@@ -13,7 +13,7 @@ KNOWN_FACES_DIR = "known_faces"
 # --- NEW: Configuration for Cloud API ---
 # Keep this pointing to localhost for now. When you deploy the web app to the cloud, 
 # you will change this to your live URL (e.g., "https://facebeam.onrender.com/api/log_attendance")
-CLOUD_API_URL = "http://127.0.0.1:5000/api/log_attendance" 
+CLOUD_API_URL = "https://jat.pythonanywhere.com/api/log_attendance"
 
 def get_current_subject():
     now = datetime.now()
